@@ -11,6 +11,10 @@ app = Flask('gradame')
 api = restful.Api(app)
 mongo = PyMongo(app)
 UPLOAD_DIR = os.path.dirname(os.path.realpath(__file__)) + '/upload/'
+ALLOWED_PHOTO_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_PHOTO_EXTENSIONS
 
 parser = reqparse.RequestParser()
 parser.add_argument('limit', type=int)
@@ -38,7 +42,7 @@ class Signal(restful.Resource):
          - Mark as invalid (admin only - most likely to be manual?)
          - Confirm signal is still existing
 		Not Implemented yet!"""
-		pass
+    		pass
 
 
 class Signals(restful.Resource):
@@ -82,6 +86,10 @@ class Signals(restful.Resource):
 		parser.add_argument('city', type=str)
 		parser.add_argument('photo', type=werkzeug.datastructures.FileStorage, location='files')
 		args = parser.parse_args()
+
+		if not allowed_file(args['photo'].filename):
+			return {'message': 'Such image is not allowed.', 'status': 400}, 400
+
 		photo_filename = werkzeug.secure_filename(args['photo'].filename)
 		args['photo'].save(UPLOAD_DIR + photo_filename)
 		# Retrieve address
