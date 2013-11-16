@@ -1,2 +1,2 @@
-Django -e git+https://github.com/django-nonrel/django.git
+git+https://github.com/django-nonrel/django.git#egg=Django
 wsgiref==0.1.2
