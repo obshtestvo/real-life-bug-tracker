@@ -1,3 +1,5 @@
+import os
+import werkzeug
 from flask import Flask
 from flask.ext import restful
 from flask.ext.restful import reqparse
@@ -8,6 +10,7 @@ import datetime
 app = Flask('gradame')
 api = restful.Api(app)
 mongo = PyMongo(app)
+UPLOAD_DIR = os.path.dirname(os.path.realpath(__file__)) + '/upload/'
 
 parser = reqparse.RequestParser()
 parser.add_argument('limit', type=int)
@@ -43,15 +46,25 @@ class Signals(restful.Resource):
 		Not Implemented yet!
 		"""
 		parser.add_argument('details', type=str)
+		parser.add_argument('address', type=str)
+		parser.add_argument('city', type=str)
+		parser.add_argument('photo', type=werkzeug.datastructures.FileStorage, location='files')
 		args = parser.parse_args()
+		photo_filename = werkzeug.secure_filename(args['photo'].filename)
+		args['photo'].save(UPLOAD_DIR + photo_filename)
 		# Retrieve address
 		signal = {
 			'type': args['type'],
 			'dates': [{'event': 'added', 'date': datetime.datetime.now()}],
-			'status': 'new',
+			'status': args['status'], # could be 'new' or 'duplicate'
 			'details': args['details'],
-			'picture': '',
-			'location': {'latitude': args['lat'], 'longtitude': args['lng'], 'address':'', 'city':'', 'country':'BG'},
+			'picture': photo_filename,
+			'location': {
+                'latitude': args['lat'],
+                'longtitude': args['lng'],
+                'address': args['address'],
+                'city': args['city'],
+                'country':'BG'},
 			'user_id': 0
 		}
 		return {'message': 'Successfuly created new signal.'}, 201
@@ -59,7 +72,6 @@ class Signals(restful.Resource):
 	def delete(self):
 		"""Mass delete signals based one specific criteria."""
 		pass
-
 
 api.add_resource(Signal, '/signal/<string:signal_id>', endpoint='signal')
 api.add_resource(Signals, '/signals', endpoint='signals')
