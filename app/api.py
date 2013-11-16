@@ -31,6 +31,15 @@ class Signal(restful.Resource):
 		"""Delete a signal"""
 		pass
 
+	def put(self):
+		"""Scenarios:
+		 - Add duplicate
+         - Mark as solved
+         - Mark as invalid (admin only - most likely to be manual?)
+         - Confirm signal is still existing
+		Not Implemented yet!"""
+		pass
+
 
 class Signals(restful.Resource):
     def get(self):
@@ -63,8 +72,6 @@ class Signals(restful.Resource):
 
         return (signals, 200) if signals else {'message': 'Nothing Found.', 'status':404}, 404
 
-	def put(self):
-		pass
 
 	def post(self):
 		"""Create a new signal.
