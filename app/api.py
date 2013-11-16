@@ -87,10 +87,10 @@ class Signals(restful.Resource):
 		parser.add_argument('photo', type=werkzeug.datastructures.FileStorage, location='files')
 		args = parser.parse_args()
 
-		if not allowed_file(args['photo'].filename):
+		if not allowed_file(args['photo'].stream.filename):
 			return {'message': 'Such image is not allowed.', 'status': 400}, 400
 
-		photo_filename = werkzeug.secure_filename(args['photo'].filename)
+		photo_filename = werkzeug.secure_filename(args['photo'].stream.filename)
 		args['photo'].save(UPLOAD_DIR + photo_filename)
 		# Retrieve address
 		signal = {
@@ -102,7 +102,7 @@ class Signals(restful.Resource):
             ],
 			'status': args['status'], # could be 'new' or 'duplicate'
 			'details': args['details'],
-			'picture': photo_filename,
+			'photo': photo_filename,
 			'location': {
                 "type": "Point",
                 "coordinates": [args['lat'], args['lng']], # added to comply with GeoJSON
