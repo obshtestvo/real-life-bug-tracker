@@ -1,12 +1,12 @@
+import datetime
 import os
 import werkzeug
+
 from flask import Flask
 from flask.ext import restful
 from flask.ext.restful import reqparse
 from flask.ext.pymongo import PyMongo
 
-import datetime
-import logging
 
 app = Flask('gradame')
 api = restful.Api(app)
@@ -20,8 +20,8 @@ def allowed_file(filename):
 parser = reqparse.RequestParser()
 parser.add_argument('limit', type=int)
 parser.add_argument('page', type=int)
-parser.add_argument('lat', type=str)
-parser.add_argument('lng', type=str)
+parser.add_argument('lat', type=float)
+parser.add_argument('lng', type=float)
 parser.add_argument('type', type=str)
 parser.add_argument('status', type=str)
 parser.add_argument('nonstrict', type=str)
@@ -52,10 +52,8 @@ class Signals(restful.Resource):
         the parameters specified.
         Not Implemented yet!"""
         # ref: http://docs.mongodb.org/manual/reference/operator/query/nearSphere/
-        # @todo: create_index GEO2D on the location key
+        # @todo: db.signals.ensureIndex( { location : "2dsphere" } )
         parser.add_argument('radius', type=int) # in meters
-        parser.add_argument('lat', type=float)
-        parser.add_argument('lng', type=float)
         parser.add_argument('user_id', type=int)
 
         args = parser.parse_args()
@@ -74,7 +72,6 @@ class Signals(restful.Resource):
         }
         criteria = dict((k, v) for k, v in criteria.iteritems() if v) # filter empty values
         signals = mongo.db.signals.find(criteria, limit=args['limit'])
-
         return (signals, 200) if signals else {'message': 'Nothing Found.', 'status':404}, 404
 
 
