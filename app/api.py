@@ -33,10 +33,25 @@ class Signal(restful.Resource):
 
 
 class Signals(restful.Resource):
-	def get(self):
-		"""Retrieve all signals filtered using
-		the parameters specified."""
-		pass
+    def get(self):
+        """Retrieve all signals filtered using
+        the parameters specified.
+        Not Implemented yet!"""
+        parser.add_argument('radius', type=int)
+        parser.add_argument('lat', type=float)
+        parser.add_argument('lng', type=float)
+        args = parser.parse_args()
+        signals = mongo.db.signals.find({
+            "location": {
+                "$nearSphere": {
+                    "$geometry": {
+                        "type": "Point" ,
+                        "coordinates": [ args['lat'] , args['lng'] ]
+                    },
+                    "$maxDistance": args['radius']
+        }}})
+
+        return (signals, 200) if signals else {'message': 'Nothing Found.', 'status':200}, 200
 
 	def put(self):
 		pass
@@ -55,11 +70,17 @@ class Signals(restful.Resource):
 		# Retrieve address
 		signal = {
 			'type': args['type'],
-			'dates': [{'event': 'added', 'date': datetime.datetime.now()}],
+			'dates': [
+                {'event': 'added', 'date': datetime.datetime.now()},
+                {'event': 'last_updated', 'date': datetime.datetime.now()},
+                {'event': 'last_confirmed', 'date': datetime.datetime.now()},
+            ],
 			'status': args['status'], # could be 'new' or 'duplicate'
 			'details': args['details'],
 			'picture': photo_filename,
 			'location': {
+                "type": "Point",
+                "coordinates": [args['lat'], args['lng']], # added to comply with GeoJSON
                 'latitude': args['lat'],
                 'longtitude': args['lng'],
                 'address': args['address'],
