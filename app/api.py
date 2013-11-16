@@ -47,35 +47,35 @@ class Signal(restful.Resource):
 
 
 class Signals(restful.Resource):
-    #def get(self):
-    #    """Retrieve all signals filtered using
-    #    the parameters specified.
-    #    Not Implemented yet!"""
-    #    # ref: http://docs.mongodb.org/manual/reference/operator/query/nearSphere/
-    #    # @todo: create_index GEO2D on the location key
-    #    parser.add_argument('radius', type=int) # in meters
-    #    parser.add_argument('lat', type=float)
-    #    parser.add_argument('lng', type=float)
-    #    parser.add_argument('user_id', type=int)
-    #
-    #    args = parser.parse_args()
-    #    criteria = {
-    #        "location": {
-    #            "$nearSphere": {
-    #                "$geometry": {
-    #                    "type": "Point" ,
-    #                    "coordinates": [ args['lat'] , args['lng'] ]
-    #                },
-    #                "$maxDistance": args['radius']
-    #        }},
-    #        "status": args['status'],
-    #        "type": args['type'],
-    #        "user_id": args['user_id']
-    #    }
-    #    criteria = dict((k, v) for k, v in criteria.iteritems() if v) # filter empty values
-    #    signals = mongo.db.signals.find(criteria, limit=args['limit'])
-    #
-    #    return (signals, 200) if signals else {'message': 'Nothing Found.', 'status':404}, 404
+    def get(self):
+        """Retrieve all signals filtered using
+        the parameters specified.
+        Not Implemented yet!"""
+        # ref: http://docs.mongodb.org/manual/reference/operator/query/nearSphere/
+        # @todo: create_index GEO2D on the location key
+        parser.add_argument('radius', type=int) # in meters
+        parser.add_argument('lat', type=float)
+        parser.add_argument('lng', type=float)
+        parser.add_argument('user_id', type=int)
+
+        args = parser.parse_args()
+        criteria = {
+            "location": {
+                "$nearSphere": {
+                    "$geometry": {
+                        "type": "Point" ,
+                        "coordinates": [ args['lat'] , args['lng'] ]
+                    },
+                    "$maxDistance": args['radius']
+            }},
+            "status": args['status'],
+            "type": args['type'],
+            "user_id": args['user_id']
+        }
+        criteria = dict((k, v) for k, v in criteria.iteritems() if v) # filter empty values
+        signals = mongo.db.signals.find(criteria, limit=args['limit'])
+
+        return (signals, 200) if signals else {'message': 'Nothing Found.', 'status':404}, 404
 
 
 	def post(self):
