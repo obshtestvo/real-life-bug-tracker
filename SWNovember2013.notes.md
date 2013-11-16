@@ -18,7 +18,8 @@ git clone git@github.com:obshtestvo-idei/real-life-bug-tracker-phone-app.git ./S
 Via ↬ http://api.mongodb.org/python/current/tools.html#framework-tools
 
 ### phone app
-Phone gap
+ - https://github.com/obshtestvo-idei/real-life-bug-tracker-phone-app
+ - Phone gap
  - ?
 
 ### Tool ⇆ Authority adapter
