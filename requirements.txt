@@ -1,0 +1,2 @@
+Django -e git+https://github.com/django-nonrel/django.git
+wsgiref==0.1.2
