@@ -1,7 +1,9 @@
+# coding=UTF-8
 import datetime
 import os
 import werkzeug
 
+from bson.objectid import ObjectId
 from flask import Flask
 from flask.ext import restful
 from flask.ext.restful import reqparse
@@ -29,21 +31,42 @@ parser.add_argument('nonstrict', type=str)
 class Signal(restful.Resource):
 	def get(self, signal_id):
 		args = parser.parse_args()
-		signal = mongo.db.signals.find_one(signal_id)
+		signal = mongo.db.signals.find_one(ObjectId(signal_id))
 		return (signal, 200) if signal else {'message':'Not Found.', 'status':404}, 404
 
 	def delete(self, signal_id):
 		"""Delete a signal"""
 		pass
 
-	def put(self):
+	def put(self,  signal_id):
 		"""Scenarios:
 		 - Add duplicate
-         - Mark as solved
-         - Mark as invalid (admin only - most likely to be manual?)
-         - Confirm signal is still existing
+		 - Mark as solved
+		 - Mark as invalid (admin only - most likely to be manual?)
+		 - Confirm signal is still existing
 		Not Implemented yet!"""
-    		pass
+		parser.add_argument('scenario', type=str)
+		args = parser.parse_args()
+		scenario = args['scenario']
+		signal = mongo.db.signals.find_one(ObjectId(signal_id))
+		if scenario=='resolution':
+			# Adds new event in the “dates” property {event: “solved”, date: “2013-11-14”}
+			# and the status is changed to “solved”. Where 2013-11-14 is the current date
+			signal.update()
+		elif scenario=='duplication':
+			#asd
+			signal.update()
+		elif scenario=='invalidation':
+			#asd
+			signal.update()
+		elif scenario=='affirmation':
+			#asd
+			signal.update()
+		else:
+			#normal update
+			signal.update()
+
+		return {}, 200
 
 
 class Signals(restful.Resource):
