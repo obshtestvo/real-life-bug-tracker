@@ -1,6 +1,7 @@
 # coding=UTF-8
 import datetime
 import os
+import json
 import werkzeug
 
 from bson.objectid import ObjectId
@@ -8,7 +9,17 @@ from flask import Flask
 from flask.ext import restful
 from flask.ext.restful import reqparse
 from flask.ext.pymongo import PyMongo
+from flask.ext.restful.representations.json import settings as json_settings
 
+class MongoEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, ObjectId):
+            return str(obj)
+        if isinstance(obj, datetime.datetime	):
+            return obj.isoformat()
+        return json.JSONEncoder.default(self, obj)
+
+json_settings['cls'] = MongoEncoder
 
 app = Flask('gradame')
 api = restful.Api(app)
