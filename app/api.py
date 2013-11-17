@@ -58,24 +58,63 @@ class Signal(restful.Resource):
 		 - Confirm signal is still existing
 		Not Implemented yet!"""
 		parser.add_argument('scenario', type=str)
+		parser.add_argument('duplicate_id', type=int)
 		args = parser.parse_args()
 		scenario = args['scenario']
-		signal = mongo.db.signals.find_one(ObjectId(signal_id))
+		obj_id = ObjectId(obj_id)
+		now = datetime.datetime.now()
 		if scenario=='resolution':
-			# Adds new event in the “dates” property {event: “solved”, date: “2013-11-14”}
-			# and the status is changed to “solved”. Where 2013-11-14 is the current date
-			signal.update()
+			mongo.db.collection.update(
+				{"_id": obj_id},
+				{
+					"$push": {
+				 		"dates.log": {"event": "solved", "date": now}
+					},
+					"$set": {
+				 		"status": "solved"
+					}
+				}
+			)
 		elif scenario=='duplication':
-			#asd
-			signal.update()
+			mongo.db.collection.update(
+				{"_id": obj_id},
+				{
+					"$push": {
+				 		"dates.log": {"event": "updated", "date": now},
+				 		"duplicates": args['duplicate_id'],
+					},
+					"$set": {
+				 		"dates.last_updated": now
+					}
+				}
+			)
 		elif scenario=='invalidation':
-			#asd
-			signal.update()
+			mongo.db.collection.update(
+				{"_id": obj_id},
+				{
+					"$push": {
+				 		"dates.log": {"event": "invalid", "date": now},
+					},
+					"$set": {
+				 		"status": "invalid"
+					}
+				}
+			)
 		elif scenario=='affirmation':
-			#asd
-			signal.update()
+			mongo.db.collection.update(
+				{"_id": obj_id},
+				{
+					"$push": {
+				 		"dates": {"event": "confirm", "date": now},
+					},
+					"$set": {
+				 		"dates.last_confirmed": now,
+				 		"status": "invalid"
+					}
+				}
+			)
 		else:
-			#normal update
+			#normal update @todo implement if needed
 			signal.update()
 
 		return {}, 200
@@ -131,13 +170,17 @@ class Signals(restful.Resource):
 		# Retrieve address
 		signal = {
 			'type': args['type'],
-			'dates': [
-                {'event': 'added', 'date': datetime.datetime.now()},
-                {'event': 'last_updated', 'date': datetime.datetime.now()},
-                {'event': 'last_confirmed', 'date': datetime.datetime.now()},
-            ],
+			'dates': {
+				'log': [
+					{'event': 'added', 'date': datetime.datetime.now()},
+					{'event': 'confirmed', 'date': datetime.datetime.now()},
+				],
+				'last_updated': datetime.datetime.now()
+			},
+			'last_confirmed': datetime.datetime.now(), # could be 'new' or 'duplicate'
 			'status': args['status'], # could be 'new' or 'duplicate'
 			'details': args['details'],
+			'duplicates': [],
 			'photo': photo_filename,
 			'location': {
                 "type": "Point",
