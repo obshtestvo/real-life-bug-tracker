@@ -1,0 +1,22 @@
+upstream gradame_flask {
+  server unix:///tmp/gradame.sock;
+  keepalive 64;
+}
+
+server {
+    listen 80;
+
+    server_name gradame.bg;
+    access_log /home/ubuntu/projects/gradame/access.log;
+
+    location ~ ^/(?:lib/|img/|js/|css/|upload/|robots.txt|humans.txt|favicon.ico) {
+      root /home/ubuntu/projects/gradame/static;
+      access_log off;
+      expires max;
+    }
+
+    location / {
+      include uwsgi_params;
+      uwsgi_pass gradame_flask;
+    }
+}
