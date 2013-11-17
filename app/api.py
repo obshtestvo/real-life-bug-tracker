@@ -16,7 +16,7 @@ class MongoEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, ObjectId):
             return str(obj)
-        if isinstance(obj, datetime.datetime	):
+        if isinstance(obj, datetime.datetime):
             return obj.isoformat()
         return json.JSONEncoder.default(self, obj)
 
@@ -62,7 +62,7 @@ class Signal(restful.Resource):
 		parser.add_argument('photo', type=werkzeug.datastructures.FileStorage, location='files')
 		args = parser.parse_args()
 		scenario = args['scenario']
-		obj_id = ObjectId(obj_id)
+		obj_id = ObjectId(signal_id)
 		now = datetime.datetime.now()
 		if scenario=='resolution':
 			if not allowed_file(args['photo'].stream.filename):
@@ -70,7 +70,7 @@ class Signal(restful.Resource):
 
 			photo_filename = werkzeug.secure_filename(args['photo'].stream.filename)
 			args['photo'].save(UPLOAD_DIR + photo_filename)
-			mongo.db.collection.update(
+			mongo.db.signals.update(
 				{"_id": obj_id},
 				{
 					"$push": {
@@ -83,7 +83,7 @@ class Signal(restful.Resource):
 				}
 			)
 		elif scenario=='duplication':
-			mongo.db.collection.update(
+			mongo.db.signals.update(
 				{"_id": obj_id},
 				{
 					"$push": {
@@ -96,7 +96,7 @@ class Signal(restful.Resource):
 				}
 			)
 		elif scenario=='invalidation':
-			mongo.db.collection.update(
+			mongo.db.signals.update(
 				{"_id": obj_id},
 				{
 					"$push": {
@@ -108,15 +108,14 @@ class Signal(restful.Resource):
 				}
 			)
 		elif scenario=='affirmation':
-			mongo.db.collection.update(
+			mongo.db.signals.update(
 				{"_id": obj_id},
 				{
 					"$push": {
-				 		"dates": {"event": "confirm", "date": now},
+				 		"dates.log": {"event": "confirm", "date": now},
 					},
 					"$set": {
-				 		"dates.last_confirmed": now,
-				 		"status": "invalid"
+				 		"dates.last_confirmed": now
 					}
 				}
 			)
@@ -183,9 +182,9 @@ class Signals(restful.Resource):
 					{'event': 'added', 'date': now},
 					{'event': 'confirmed', 'date': now},
 				],
-				'last_updated': now
+				'last_updated': now,
+				'last_confirmed': now, # could be 'new' or 'duplicate'
 			},
-			'last_confirmed': now, # could be 'new' or 'duplicate'
 			'status': args['status'], # could be 'new' or 'duplicate'
 			'details': args['details'],
 			'duplicates': [],
