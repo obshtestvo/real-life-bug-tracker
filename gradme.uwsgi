@@ -8,8 +8,8 @@ master = true
 # with appropriate permissions - *may* be needed
 socket  = /tmp/gradame.sock
 # chmod-socket    = 664
-chdir = /home/ubuntu/projects/gradame
-module = app.api
+chdir = /home/ubuntu/projects/grada.me/app
+module = api
 callable = app
 # the virtualenv
 virtualenv = /home/ubuntu/.virtualenvs/grada.me

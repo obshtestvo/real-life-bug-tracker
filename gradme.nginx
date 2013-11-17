@@ -29,21 +29,21 @@ server {
 #    ssl_ciphers HIGH:!aNULL:!MD5;
 
     server_name gradame.bg;
-    access_log /home/ubuntu/web/gradame/access.log;
+    access_log /home/ubuntu/projects/grada.me/access.log;
 
 #   error_page 502  /errors/502.html;
 
     # The ?: prefix is a 'non-capturing' mark, meaning we do not require
     # the pattern to be captured into $1 which should help improve performance
     location ~ ^/(?:lib/|img/|js/|css/|upload/|robots.txt|humans.txt|favicon.ico) {
-      root /home/ubuntu/web/gradame/static;
+      root /home/ubuntu/projects/grada.me/static;
       access_log off;
       expires max;
     }
 
 #    location /errors {
 #      internal;
-#      alias /home/ubuntu/web/gradame/static/errors;
+#      alias /home/ubuntu/projects/grada.me/static/errors;
 #    }
 
     location / {

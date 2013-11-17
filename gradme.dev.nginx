@@ -7,10 +7,10 @@ server {
     listen 80;
 
     server_name gradame.bg;
-    access_log /home/ubuntu/projects/gradame/access.log;
+    access_log /home/ubuntu/projects/grada.me/access.log;
 
     location ~ ^/(?:lib/|img/|js/|css/|upload/|robots.txt|humans.txt|favicon.ico) {
-      root /home/ubuntu/projects/gradame/static;
+      root /home/ubuntu/projects/grada.me/static;
       access_log off;
       expires max;
     }
