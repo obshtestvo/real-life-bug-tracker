@@ -3,7 +3,6 @@ import datetime
 import os
 import json
 import werkzeug
-import logging
 
 from bson.objectid import ObjectId
 from flask import Flask
