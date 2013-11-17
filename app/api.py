@@ -3,6 +3,7 @@ import datetime
 import os
 import json
 import werkzeug
+import logging
 
 from bson.objectid import ObjectId
 from flask import Flask
@@ -106,7 +107,10 @@ class Signals(restful.Resource):
         }
         criteria = dict((k, v) for k, v in criteria.iteritems() if v) # filter empty values
         signals = mongo.db.signals.find(criteria, limit=args['limit'])
-        return (signals, 200) if signals else {'message': 'Nothing Found.', 'status':404}, 404
+        data = []
+        for signal in signals:
+            data.append(signal)
+        return (data, 200) if signals else {'message': 'Nothing Found.', 'status':404}, 404
 
 
 	def post(self):
