@@ -125,7 +125,6 @@ class Signal(restful.Resource):
 
 		return {}, 200
 
-
 class Signals(restful.Resource):
     def get(self):
         """Retrieve all signals filtered using
@@ -209,8 +208,18 @@ class Signals(restful.Resource):
 		"""Mass delete signals based one specific criteria."""
 		pass
 
+class Types(restful.Resource):
+    def get(self):
+        types = mongo.db.types.find()
+        data = []
+        for cat in types:
+            data.append(cat)
+        return (data, 200) if types else {'message': 'Nothing Found.', 'status':404}, 404
+
+
 api.add_resource(Signal, '/signal/<string:signal_id>', endpoint='signal')
 api.add_resource(Signals, '/signals', endpoint='signals')
+api.add_resource(Types, '/types', endpoint='types')
 
 if __name__ == '__main__':
 	app.run(debug=True)
