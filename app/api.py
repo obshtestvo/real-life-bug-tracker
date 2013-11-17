@@ -59,16 +59,23 @@ class Signal(restful.Resource):
 		Not Implemented yet!"""
 		parser.add_argument('scenario', type=str)
 		parser.add_argument('duplicate_id', type=int)
+		parser.add_argument('photo', type=werkzeug.datastructures.FileStorage, location='files')
 		args = parser.parse_args()
 		scenario = args['scenario']
 		obj_id = ObjectId(obj_id)
 		now = datetime.datetime.now()
 		if scenario=='resolution':
+			if not allowed_file(args['photo'].stream.filename):
+				return {'message': 'Such image is not allowed.', 'status': 400}, 400
+
+			photo_filename = werkzeug.secure_filename(args['photo'].stream.filename)
+			args['photo'].save(UPLOAD_DIR + photo_filename)
 			mongo.db.collection.update(
 				{"_id": obj_id},
 				{
 					"$push": {
-				 		"dates.log": {"event": "solved", "date": now}
+				 		"dates.log": {"event": "solved", "date": now},
+				 		"photos.gallery": {"event": "solved", "date": now}
 					},
 					"$set": {
 				 		"status": "solved"
@@ -165,6 +172,7 @@ class Signals(restful.Resource):
 		if not allowed_file(args['photo'].stream.filename):
 			return {'message': 'Such image is not allowed.', 'status': 400}, 400
 
+		now = datetime.datetime.now()
 		photo_filename = werkzeug.secure_filename(args['photo'].stream.filename)
 		args['photo'].save(UPLOAD_DIR + photo_filename)
 		# Retrieve address
@@ -172,16 +180,19 @@ class Signals(restful.Resource):
 			'type': args['type'],
 			'dates': {
 				'log': [
-					{'event': 'added', 'date': datetime.datetime.now()},
-					{'event': 'confirmed', 'date': datetime.datetime.now()},
+					{'event': 'added', 'date': now},
+					{'event': 'confirmed', 'date': now},
 				],
-				'last_updated': datetime.datetime.now()
+				'last_updated': now
 			},
-			'last_confirmed': datetime.datetime.now(), # could be 'new' or 'duplicate'
+			'last_confirmed': now, # could be 'new' or 'duplicate'
 			'status': args['status'], # could be 'new' or 'duplicate'
 			'details': args['details'],
 			'duplicates': [],
-			'photo': photo_filename,
+			'photos': {
+				"main": photo_filename,
+				"gallery": [{"path": photo_filename, "date": now}]
+			},
 			'location': {
                 "type": "Point",
                 "coordinates": [args['lat'], args['lng']], # added to comply with GeoJSON
