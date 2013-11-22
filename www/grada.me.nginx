@@ -1,13 +1,7 @@
 server {
     listen          80;
     server_name     www.grada.me;
-    return 301 $scheme://www.grada.me$request_uri;
-}
-
-server {
-    listen          80;
-    server_name     www.grada.me;
 
     index index.html;
-    root /home/ubuntu/grada.me/web/;
+    root /home/ubuntu/projects/grada.me/www/;
 }

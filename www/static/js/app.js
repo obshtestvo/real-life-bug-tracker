@@ -6,6 +6,7 @@ $(function() {
         navigation : true,
         pagination : true,
         slideSpeed : 400,
+        navigationText : [$slider.data('prevText'), $slider.data('nextText')],
         itemsCustom : [
             [0, 1],
             [450, 1],
