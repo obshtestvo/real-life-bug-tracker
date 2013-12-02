@@ -1,6 +1,9 @@
 
 ## Installation
 
+For the commands below `/home/ubuntu/web/gradame/` is used as location of the project. Edit before executing commands
+if your locaiton is different.
+
 ### OS Requirements
  - nginx server
  - uwsgi server
@@ -47,7 +50,7 @@ sudo service nginx restart
 ```
 ### UWSGI server
 
-Enable & activate "openparliament" in the `uwsgi` server:
+Enable & activate "gradame" in the `uwsgi` server:
 ```sh
 sudo ln -s /home/ubuntu/web/gradame/gradame.uwsgi /etc/uwsgi/apps-enabled/gradame.ini
 sudo service uwsgi restart
