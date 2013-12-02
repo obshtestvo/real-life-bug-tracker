@@ -1,0 +1,38 @@
+<html>
+    <meta charset="utf-8">
+<body>
+Endpoint Домейн/IP
+<input type="text" name="endpoint" id="endpoint" value="127.0.0.1"><br>
+<input type="button" id="endpointChange" name="endpointChange" value="Смени">
+
+<h1>Нов сигнал</h1>
+<form action="http://127.0.0.1/signals" method="post" enctype="multipart/form-data">
+    <label for="photo">Снимка:</label>
+    <input type="file" name="photo" id="photo"><br>
+    <input type="text" name="status" value="new"><br>
+    <input type="text" name="type" value="Flood"><br>
+    <input type="text" name="details" value=""><br>
+    <input type="text" name="lat" value="23.23"><br>
+    <input type="text" name="lng" value="41.23"><br>
+    <input type="text" name="address" value="bul. Vasil Levski"><br>
+    <input type="text" name="city" value="Sofia"><br>
+    <input type="text" name="country" value="Bulgaria"><br>
+    <input type="submit" name="submit" value="Submit">
+</form>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.js"></script>
+<script type="application/javascript">
+    $(function() {
+        var $endpointInput = $('#endpoint');
+        var endpoint = $endpointInput.val()
+        $('#endpointChange').click(function() {
+            var newEndpoint = $endpointInput.val();
+            $('form').each(function() {
+                 $(this).attr('action', $(this).attr('action').replace(endpoint, newEndpoint) )
+            })
+            endpoint = newEndpoint;
+        })
+    })
+</script>
+</body>
+</html>
