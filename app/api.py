@@ -11,13 +11,15 @@ from flask.ext.restful import reqparse
 from flask.ext.pymongo import PyMongo
 from flask.ext.restful.representations.json import settings as json_settings
 
+
 class MongoEncoder(json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, ObjectId):
-            return str(obj)
-        if isinstance(obj, datetime.datetime):
-            return obj.isoformat()
-        return json.JSONEncoder.default(self, obj)
+	def default(self, obj):
+		if isinstance(obj, ObjectId):
+			return str(obj)
+		if isinstance(obj, datetime.datetime):
+			return obj.isoformat()
+		return json.JSONEncoder.default(self, obj)
+
 
 json_settings['cls'] = MongoEncoder
 
@@ -26,9 +28,12 @@ api = restful.Api(app)
 mongo = PyMongo(app)
 UPLOAD_DIR = os.path.dirname(os.path.realpath(__file__)) + '/upload/'
 ALLOWED_PHOTO_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
+
+
 def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1] in ALLOWED_PHOTO_EXTENSIONS
+	return '.' in filename and \
+		   filename.rsplit('.', 1)[1] in ALLOWED_PHOTO_EXTENSIONS
+
 
 parser = reqparse.RequestParser()
 parser.add_argument('limit', type=int)
@@ -39,17 +44,18 @@ parser.add_argument('type', type=str)
 parser.add_argument('status', type=str)
 parser.add_argument('nonstrict', type=str)
 
+
 class Signal(restful.Resource):
 	def get(self, signal_id):
 		args = parser.parse_args()
 		signal = mongo.db.signals.find_one(ObjectId(signal_id))
-		return (signal, 200) if signal else {'message':'Not Found.', 'status':404}, 404
+		return (signal, 200) if signal else {'message': 'Not Found.', 'status': 404}, 404
 
 	def delete(self, signal_id):
 		"""Delete a signal"""
 		pass
 
-	def put(self,  signal_id):
+	def put(self, signal_id):
 		"""Scenarios:
 		 - Add duplicate
 		 - Mark as solved
@@ -63,7 +69,7 @@ class Signal(restful.Resource):
 		scenario = args['scenario']
 		obj_id = ObjectId(signal_id)
 		now = datetime.datetime.now()
-		if scenario=='resolution':
+		if scenario == 'resolution':
 			if not allowed_file(args['photo'].stream.filename):
 				return {'message': 'Such image is not allowed.', 'status': 400}, 400
 
@@ -73,49 +79,49 @@ class Signal(restful.Resource):
 				{"_id": obj_id},
 				{
 					"$push": {
-				 		"dates.log": {"event": "solved", "date": now},
-				 		"photos.gallery": {"event": "solved", "date": now}
+						"dates.log": {"event": "solved", "date": now},
+						"photos.gallery": {"event": "solved", "date": now}
 					},
 					"$set": {
-				 		"status": "solved"
+						"status": "solved"
 					}
 				}
 			)
-		elif scenario=='duplication':
+		elif scenario == 'duplication':
 			mongo.db.signals.update(
 				{"_id": obj_id},
 				{
 					"$push": {
-				 		"dates.log": {"event": "updated", "date": now},
-				 		"duplicates": args['duplicate_id'],
+						"dates.log": {"event": "updated", "date": now},
+						"duplicates": args['duplicate_id'],
 					},
 					"$set": {
-				 		"dates.last_updated": now
+						"dates.last_updated": now
 					}
 				}
 			)
-		elif scenario=='invalidation':
+		elif scenario == 'invalidation':
 			mongo.db.signals.update(
 				{"_id": obj_id},
 				{
 					"$push": {
-				 		"dates.log": {"event": "invalid", "date": now},
+						"dates.log": {"event": "invalid", "date": now},
 					},
 					"$set": {
-				 		"status": "invalid"
+						"status": "invalid"
 					}
 				}
 			)
-		elif scenario=='affirmation':
+		elif scenario == 'affirmation':
 			mongo.db.signals.update(
 				{"_id": obj_id},
 				{
-					"$push": {
-				 		"dates.log": {"event": "confirm", "date": now},
-					},
-					"$set": {
-				 		"dates.last_confirmed": now
-					}
+				"$push": {
+				"dates.log": {"event": "confirm", "date": now},
+				},
+				"$set": {
+				"dates.last_confirmed": now
+				}
 				}
 			)
 		else:
@@ -124,36 +130,37 @@ class Signal(restful.Resource):
 
 		return {}, 200
 
-class Signals(restful.Resource):
-    def get(self):
-        """Retrieve all signals filtered using
-        the parameters specified.
-        Not Implemented yet!"""
-        # ref: http://docs.mongodb.org/manual/reference/operator/query/nearSphere/
-        # @todo: db.signals.ensureIndex( { location : "2dsphere" } )
-        parser.add_argument('radius', type=int) # in meters
-        parser.add_argument('user_id', type=int)
 
-        args = parser.parse_args()
-        criteria = {
-            "location": {
-                "$nearSphere": {
-                    "$geometry": {
-                        "type": "Point" ,
-                        "coordinates": [ args['lat'] , args['lng'] ]
-                    },
-                    "$maxDistance": args['radius']
-            }},
-            "status": args['status'],
-            "type": args['type'],
-            "user_id": args['user_id']
-        }
-        criteria = dict((k, v) for k, v in criteria.iteritems() if v) # filter empty values
-        signals = mongo.db.signals.find(criteria, limit=args['limit'])
-        data = []
-        for signal in signals:
-            data.append(signal)
-        return (data, 200) if signals else {'message': 'Nothing Found.', 'status':404}, 404
+class Signals(restful.Resource):
+	def get(self):
+		"""Retrieve all signals filtered using
+		the parameters specified.
+		Not Implemented yet!"""
+		# ref: http://docs.mongodb.org/manual/reference/operator/query/nearSphere/
+		# @todo: db.signals.ensureIndex( { location : "2dsphere" } )
+		parser.add_argument('radius', type=int) # in meters
+		parser.add_argument('user_id', type=int)
+
+		args = parser.parse_args()
+		criteria = {
+			"location": {
+				"$nearSphere": {
+					"$geometry": {
+						"type": "Point",
+						"coordinates": [args['lat'], args['lng']]
+					},
+					"$maxDistance": args['radius']
+				}},
+			"status": args['status'],
+			"type": args['type'],
+			"user_id": args['user_id']
+		}
+		criteria = dict((k, v) for k, v in criteria.iteritems() if v) # filter empty values
+		signals = mongo.db.signals.find(criteria, limit=args['limit'])
+		data = []
+		for signal in signals:
+			data.append(signal)
+		return (data, 200) if signals else {'message': 'Nothing Found.', 'status': 404}, 404
 
 
 	def post(self):
@@ -176,28 +183,28 @@ class Signals(restful.Resource):
 		signal = {
 			'type': args['type'],
 			'dates': {
-				'log': [
-					{'event': 'added', 'date': now},
-					{'event': 'confirmed', 'date': now},
-				],
-				'last_updated': now,
-				'last_confirmed': now, # could be 'new' or 'duplicate'
+			'log': [
+				{'event': 'added', 'date': now},
+				{'event': 'confirmed', 'date': now},
+			],
+			'last_updated': now,
+			'last_confirmed': now, # could be 'new' or 'duplicate'
 			},
 			'status': args['status'], # could be 'new' or 'duplicate'
 			'details': args['details'],
 			'duplicates': [],
 			'photos': {
-				"main": photo_filename,
-				"gallery": [{"path": photo_filename, "date": now}]
+			"main": photo_filename,
+			"gallery": [{"path": photo_filename, "date": now}]
 			},
 			'location': {
-                "type": "Point",
-                "coordinates": [args['lat'], args['lng']], # added to comply with GeoJSON
-                'latitude': args['lat'],
-                'longtitude': args['lng'],
-                'address': args['address'],
-                'city': args['city'],
-                'country':'BG'},
+				"type": "Point",
+				"coordinates": [args['lat'], args['lng']], # added to comply with GeoJSON
+				'latitude': args['lat'],
+				'longtitude': args['lng'],
+				'address': args['address'],
+				'city': args['city'],
+				'country': 'BG'},
 			'user_id': 0
 		}
 		mongo.db.signals.insert(signal)
@@ -207,13 +214,14 @@ class Signals(restful.Resource):
 		"""Mass delete signals based one specific criteria."""
 		pass
 
+
 class Types(restful.Resource):
-    def get(self):
-        types = mongo.db.types.find()
-        data = []
-        for cat in types:
-            data.append(cat)
-        return (data, 200) if types else {'message': 'Nothing Found.', 'status':404}, 404
+	def get(self):
+		types = mongo.db.types.find()
+		data = []
+		for cat in types:
+			data.append(cat)
+		return (data, 200) if types else {'message': 'Nothing Found.', 'status': 404}, 404
 
 
 api.add_resource(Signal, '/signal/<string:signal_id>', endpoint='signal')
