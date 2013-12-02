@@ -22,8 +22,9 @@ Install app dependencies
 pip install -r requirements.txt
 ```
 
-
-Edit the domain name for your website in `gradame.dev.nginx` and `gradame.nginx`.
+### Edit local settings
+ - Domain name for your website in `gradame.dev.nginx` and `gradame.nginx`.
+ - Paths in `gradame.dev.nginx`, `gradame.nginx` and `gradame.uwsgi`
 
 Enable "gradame" in `nginx` server:
 ```sh

@@ -1,4 +1,4 @@
-# API
+а# API
 
 ## Endpoint
 
@@ -15,7 +15,7 @@ Could be filtered by category.
 we want to filter the signals by but we also want all other non-matching
 results listed afterwards.
 
-### POST /signals/
+### `POST /signals/`
 
 Multipart body will include:
 
@@ -40,10 +40,10 @@ Three new events are also added in the “dates” property:
 
 Where `2013-11-14` is the current date
 
-### GET /signal/id
+### `GET /signal/id`
 Return all the info for the signal
 
-### PUT /signal/id
+### `PUT /signal/id`
 Scenarios:
 
 #### Add duplicate
@@ -74,6 +74,6 @@ No parameters
 Updates the `“last_confirmed”` event in the `“dates”` property `{event: “last_confirmed”, date: “2013-11-14”}`.
 Where `2013-11-14` is the current date
 
-#### GET /signal/types
+#### `GET /signal/types`
 No params
 Get all signal types/categories
