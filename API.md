@@ -7,6 +7,12 @@
 ```
 ?lat=...&lng=...&radius=...&type=...&status =...&user=...&nonstrict=[<parameter names>]&limit=...
 ```
+#### Required parameters
+
+ - lat
+ - lng
+ - radius
+ - limit
 
 Listing all signals from certain location around certain radius.
 Could be filtered by category.
