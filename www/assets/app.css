@@ -1,0 +1,219 @@
+/*! HTML5 Boilerplate v4.3.0 | MIT License | http://h5bp.com/ */
+
+/*
+ * What follows is the result of much research on cross-browser styling.
+ * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,
+ * Kroc Camen, and the H5BP dev community and team.
+ */
+
+/* ==========================================================================
+   Base styles: opinionated defaults
+   ========================================================================== */
+
+html,
+button,
+input,
+select,
+textarea {
+  color: #222;
+}
+
+html {
+  font-size: 1em;
+  line-height: 1.4;
+}
+
+/*
+ * Remove text-shadow in selection highlight: h5bp.com/i
+ * These selection rule sets have to be separate.
+ * Customize the background color to match your design.
+ */
+
+::-moz-selection {
+  background: #b3d4fc;
+  text-shadow: none;
+}
+
+::selection {
+  background: #b3d4fc;
+  text-shadow: none;
+}
+
+/* ==========================================================================
+   Author's custom styles
+   ========================================================================== */
+
+body {
+  font-family: "Roboto", "Verdana", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: #fcfbf9 url("bg.png") no-repeat bottom left fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  font-size: 14px;
+}
+
+header.masthead {
+  text-align: center;
+  padding-bottom: 80px;
+  padding-top: 40px;
+}
+
+header.masthead h1 {
+  margin: 0;
+  display: inline-block;
+  vertical-align: top;
+  padding-top: 3px;
+}
+
+header.masthead .logo img {
+  width: 150px;
+  vertical-align: top;
+}
+
+header.masthead p.subtitle {
+  text-align: left;
+  display: inline-block;
+  text-transform: uppercase;
+  font-size: 13px;
+  line-height: 15px;
+  margin: 2px 0;
+  padding-left: 20px;
+  vertical-align: top;
+  font-weight: 100;
+  width: 350px;
+}
+
+.section-heading {
+  text-align: center;
+  font-weight: 100;
+  padding-bottom: 30px;
+}
+
+footer {
+  text-align: center;
+}
+
+footer .credits-intro {
+  display: block;
+  color: #57544c;
+  font-size: 12px;
+}
+
+footer a.credits {
+  display: inline-block;
+  padding-top: 30px;
+  position: relative;
+  background: url("obshtestvo-logo.png") no-repeat center top;
+}
+
+footer .credits-logo {
+  display: none;
+}
+
+footer a.credits:hover .credits-logo {
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  margin-left: -75px
+}
+
+/* ==========================================================================
+   Helper classes
+   ========================================================================== */
+.container {
+  height: 560px;
+  width: 1200px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  margin-top: -280px;
+  margin-left: -600px;
+}
+
+
+section {
+  vertical-align: top;
+  width: 32%;
+  display: inline-block;
+  padding: 0 40px;
+  box-sizing: border-box;
+}
+
+section h2 {
+  font-weight: normal;
+  line-height: 1;
+  margin: 0;
+  padding: 0
+}
+
+section p {
+  line-height: 1.6;
+  font-weight: lighter;
+}
+
+.fb-like {
+  margin-left: auto;
+  margin-right: auto;
+  width: 520px;
+  height: 60px;
+  display: block !important;
+  margin-top: 40px;
+  margin-bottom: 50px;
+}
+
+#mc_embed_signup h2 {
+  padding-bottom: 15px;
+}
+
+#mc_embed_signup input {
+  border-radius: 3px;
+  border: none;
+  outline: none;
+  padding: 5px 7px;
+  transition: all 0.200s;
+}
+
+#mce-FNAME,
+#mce-EMAIL {
+  background: #eee;
+  border: solid 1px #ddd !important;
+}
+
+#mce-FNAME:focus,
+#mce-EMAIL:focus {
+  background: #fff;
+}
+
+.mc-field-group {
+  display: block;
+  padding: 3px 0;
+}
+
+.mc-field-group label {
+  display: block;
+}
+
+#mc-embedded-subscribe {
+  margin-top: 10px;
+  padding: 6px 12px !important;
+  background: #53493a;
+  color: #f8f6f3;
+  font-size: 13px;
+  font-weight: lighter;
+  box-shadow: 0 1px 1px rgba(0,0,0,1), inset 0 -5px 15px rgba(0,0,0,0.1);
+}
+
+#mc-embedded-subscribe:hover {
+  background: #6c5839;
+  color: #fff;
+}
+
+#mc-embedded-subscribe:active {
+  background: #473f32;
+  color: #d7cdbe;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,1), inset 0 5px 15px rgba(0,0,0,0.1);
+}
