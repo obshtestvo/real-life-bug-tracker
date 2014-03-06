@@ -72,6 +72,21 @@ header.masthead .logo img {
   vertical-align: top;
 }
 
+.logo {
+  text-decoration: none;
+  position: relative;
+}
+
+.logo span {
+  color: #eb6b56;
+  font-size: 10px;
+  position: absolute;
+  font-weight: normal;
+  right: 4px;
+  top: 18px;
+  opacity: 0.9
+}
+
 header.masthead p.subtitle {
   text-align: left;
   display: inline-block;
